@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>DON Projectcars</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wrap" style="display: none" id="perf">
+      <div class="section-title wow fadeInUp">
+        <h3 class="description">
+          <div class="model-p">
+          <span style="margin-left: 2vw"></span>
+          <span id="model" style="color: rgb(117, 245, 43)">gago</span>
+          </div>
+          <div class="category-p">
+            <span style="margin-left: 1.5vw"></span>
+            <span id="category" style="color: rgb(35, 205, 218)">gago</span>
+          </div>
+        </h3>
+      </div>
+      <div class="list_all">
+        <div id="perfrow" class="row">
+          <ul>
+            <li class="perf">
+              <em>Install Seats</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="seat"
+                  style="width: 0.3333%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Doors</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="door"
+                  style="width: 0%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Engine</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="engine"
+                  style="width: 0.014%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Transmission</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="transmition"
+                  style="width: 0%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Repaint</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="paint"
+                  style="width: 0%"
+                ></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="row" id="perfrow">
+          <ul>
+            <li class="perf">
+              <em>Install Bonnet</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="bonnet"
+                  style="width: 0.3333%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Trunk</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="trunk"
+                  style="width: 0.3333%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Brakes</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="brake"
+                  style="width: 0%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Wheels</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="wheel"
+                  style="width: 0.014%"
+                ></span>
+              </div>
+            </li>
+            <li class="perf">
+              <em>Install Exhaust</em>
+              <div>
+                <span
+                  class="animated fadeInLeft"
+                  id="exhaust"
+                  style="width: 0%"
+                ></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="prog" id="progress">test</div>
+      <img class="line" src="./img/line.png" alt="">
+      <canvas id="progress-canvas" width="100" height="100"></canvas>
+      <img class="line line-r" src="./img/line.png" alt="">
+    </div>
+        </div>
+        <div class="instruction" style="display: none" id="instr">
+          <label for="">5 - Move Forward</label>
+          <label for="">8 - Move Back</label>
+          <label for="">4 - Move left</label>
+          <label for="">6 - Move right</label>
+          <label for="">Maj - Higher speed</label>
+          <label for="">Lshift - Lower speed</label>
+          <label for="">[E] - Spawn Vehicle</label>
+        </div>
+    <script src="script.js"></script>
+  </body>
+</html>

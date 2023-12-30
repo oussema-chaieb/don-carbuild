@@ -97,7 +97,7 @@ local function test()
 	            p:resolve(success)
 				FreezeEntityPosition(PlayerPedId(), false)
 				ClearPedTasks(PlayerPedId())
-        end, math.random(4,7), math.random(7,15))
+        end, Config.psuiNumberOfCircles, Config.psuiMS)
     return Citizen.Await(p) -- Do not touch
 end
 
@@ -105,7 +105,7 @@ local function test3()
 	local p = promise.new() -- Do not touch
 	exports['ps-ui']:Thermite(function(success)
 		p:resolve(success)
-	 end, 10, 6, 3) -- Time, Gridsize (5, 6, 7, 8, 9, 10), IncorrectBlocks
+	 end, Config.psuiThermiteTime, Config.psuiThermiteGridsize, Config.psuiThermiteIncorrectBlocks) -- Time, Gridsize (5, 6, 7, 8, 9, 10), IncorrectBlocks
     return Citizen.Await(p) -- Do not touch
 end
 
@@ -116,18 +116,18 @@ local function test2(anim)
 	FreezeEntityPosition(ped, true)
 	TriggerEvent('animations:client:EmoteCommandStart', {anim})
 	Skillbar.Start({
-		duration = math.random(4500, 10000),
-		pos = math.random(10, 30),
-		width = math.random(10, 20),
+		duration = Config.duration, -- how long the skillbar runs for
+		pos = Config.pos, -- how far to the right the static box is
+		width = Config.width, -- how wide the static box is
 	}, function() 
 		if SucceededAttempts + 1 >= NeededAttempts then
 			SucceededAttempts = 0
 			p:resolve(true) 
 		else
 			Skillbar.Repeat({
-				duration = math.random(700, 1250),
-				pos = math.random(10, 40),
-				width = math.random(10, 13),
+				duration = Config.repeatDuration,
+				pos = Config.repeatPos,
+				width = Config.repeatWidth,
 			})
 			SucceededAttempts = SucceededAttempts + 1
 		end
@@ -144,6 +144,54 @@ local function jeste(anim)
 	if test() and test2(anim) and test() then
 		return true
 	else
+		return false
+	end
+end
+
+local function hackui(anim)
+	local ped = PlayerPedId()
+	FreezeEntityPosition(ped, true)
+	if Config.hackui == "both" then
+		if test() and test2(anim) and test() then
+			FreezeEntityPosition(ped, false)
+			return true
+		else
+			FreezeEntityPosition(ped, false)
+			return false
+		end
+	elseif Config.hackui == "none" then
+		FreezeEntityPosition(ped, false)
+		return true
+	elseif Config.hackui == "ps-ui" then
+		exports['ps-ui']:Circle(function(success)
+			FreezeEntityPosition(ped, false)
+			return success
+		end, Config.psuiNumberOfCircles, Config.psuiMS) -- NumberOfCircles, MS
+	elseif Config.hackui == "qb-skillbar" then
+		local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
+		Skillbar.Start({
+			duration = Config.duration, -- how long the skillbar runs for
+			pos = Config.pos, -- how far to the right the static box is
+			width = Config.width, -- how wide the static box is
+		}, function()
+			if succeededAttempts + 1 >= neededAttempts then
+				FreezeEntityPosition(ped, false)
+				return true
+			else
+				Skillbar.Repeat({
+					duration = Config.repeatDuration,
+					pos = Config.repeatPos,
+					width = Config.repeatWidth,
+				})
+				succeededAttempts = succeededAttempts + 1
+			end
+		end, function()
+			FreezeEntityPosition(ped, false)
+			return false
+		end)
+	else
+		QBCore.Functions.Notify("check your Config.hacku")
+		FreezeEntityPosition(ped, false)
 		return false
 	end
 end
@@ -1826,7 +1874,7 @@ RegisterNetEvent('don-carbuild:client:newcar', function(model)
 		RequestModel(hash)
 		Citizen.Wait(1)
 	end
-	local spawn = vector3(-1267.15, -3013.3, -48.49)
+	local spawn = Config.SpawnNewCar
 	local appliance = CreateObject(hash,spawn, true, true)
 	while not DoesEntityExist(appliance) do Wait(0) end
 	local moveSpeed = 0.001
@@ -1976,7 +2024,7 @@ RegisterNetEvent('don-carbuild:client:spawnfinishproject', function(data,props)
 	SetVehicleOnGroundProperly(vehicle)
 	SetVehicleNumberPlateText(vehicle,props.plate)
 	SetVehicleProp(vehicle,props)
-	DeliveryStart(vector3(-345.01, -1299.16, 31.38),vector4(140.64, 6419.26, 31.36, 74.16),vehicle,data.model)
+	DeliveryStart(Config.DeliveryPoint,Config.SpawnDelivery,vehicle,data.model)
 	QBCore.Functions.Notify(Lang:t('success.finishcar'),"success")
 end)
 
@@ -2253,12 +2301,12 @@ RegisterNetEvent('don-carbuild:client:deliverydone', function(car)
 		EndTextCommandSetBlipName(deliveryblip)
 		SetBlipRoute(deliveryblip,true)
 		SetBlipRouteColour(deliveryblip,3)
-		SetNewWaypoint(vector3(44.27, 6450.53, 31.41))
+		SetNewWaypoint(Config.DeliveryReturnPoint)
 		TriggerServerEvent('qb-vehicleshop:server:owncar',car)
 		--print(car)
 		while DoesEntityExist(transport) do
 			Wait(10)
-			if #(vector3(41.8, 6448.56, 31.41) - GetEntityCoords(transport)) < 10 and GetVehiclePedIsIn(PlayerPedId()) == transport then
+			if #(Config.DeliveryReturnPoint - GetEntityCoords(transport)) < 10 and GetVehiclePedIsIn(PlayerPedId()) == transport then
 				exports['qb-core']:DrawText(Lang:t('commands.turnbacktruck'))
 				if IsControlJustReleased(0, 38) then
 					exports['qb-core']:KeyPressed(38)

@@ -27,6 +27,28 @@ Config.ExitHeading = 91.72
 Config.ExitTargetIcon = "far fa-clipboard"
 Config.ExitTargetLabel = "take the elevator"
 
+Config.SpawnNewCar = vector3(-1267.15, -3013.3, -48.49)
+Config.DeliveryPoint = vector3(-345.01, -1299.16, 31.38)
+Config.SpawnDelivery = vector4(140.64, 6419.26, 31.36, 74.16)
+Config.DeliveryReturnPoint = vector3(44.27, 6450.53, 31.41)
+
+Config.hackui = "both" -- both is for "ps-ui" and "qb-skillbar" together // "ps-ui" / "qb-skillbar" // "none" for nothing
+
+Config.duration = math.random(7500, 15000)
+Config.pos = math.random(10, 30)
+Config.width = math.random(10, 20)
+
+Config.repeatDuration = math.random(500, 1000)
+Config.repeatPos = math.random(10, 30)
+Config.repeatWidth = math.random(5, 12)
+
+Config.psuiNumberOfCircles = math.random(2, 4)
+Config.psuiMS = math.random(15, 25)
+
+Config.psuiThermiteTime = 10
+Config.psuiThermiteGridsize = 6
+Config.psuiThermiteIncorrectBlocks = 3
+
 Config.parts = { 
 	['door'] = {}, 
 	['bonnet'] = {}, 

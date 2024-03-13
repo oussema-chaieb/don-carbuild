@@ -276,6 +276,14 @@ function createFreeUseShop(shopShape, name)
     end)
 end
 
+local function checkCarStock()
+    local p = promise.new()
+    QBCore.Functions.TriggerCallback('qb-vehicleshop:server:checkstock', function(result)
+        p:resolve(result)
+    end)
+    return Citizen.Await(p)
+end
+
 function createManagedShop(shopShape, name)
     local zone = PolyZone:Create(shopShape, {
         name = name,
@@ -286,21 +294,21 @@ function createManagedShop(shopShape, name)
     zone:onPlayerInOut(function(isPointInside)
         if isPointInside then
             insideShop = name
-            local carstock = 0
             CreateThread(function()
                 while insideShop and PlayerData.job and PlayerData.job.name == Config.Shops[name]['Job'] do
-                    setClosestShowroomVehicle()                   
-                    QBCore.Functions.TriggerCallback('qb-vehicleshop:server:checkstock', function(stock)
+                    setClosestShowroomVehicle()      
+                    local stock = checkCarStock()      
+                    local carstock = 0
                         if stock then
                             for _, v in pairs(stock) do
                                 if Config.Shops[insideShop]["ShowroomVehicles"][ClosestVehicle].chosenVehicle == v.car then
+                                    print(Config.Shops[insideShop]["ShowroomVehicles"][ClosestVehicle].chosenVehicle)
+                                    print(v.car)
+                                    print(v.stock)
                                     carstock = v.stock
-                                else
-                                    carstock = 0
                                 end
                             end
-                        end
-                    end)                  
+                        end                
                     vehicleMenu = {
                         {
                             isMenuHeader = true,
@@ -316,18 +324,18 @@ function createManagedShop(shopShape, name)
                                 event = 'qb-vehicleshop:client:setpercent',
                             }
                         },
-                        {
-                            header = Lang:t('menus.test_header'),
-                            txt = Lang:t('menus.managed_test_txt'),
-                            icon = "fa-solid fa-user-plus",
-                            params = {
-                                event = 'qb-vehicleshop:client:openIdMenu',
-                                args = {
-                                    vehicle = Config.Shops[insideShop]["ShowroomVehicles"][ClosestVehicle].chosenVehicle,
-                                    type = 'testDrive'
-                                }
-                            }
-                        },
+                        -- {
+                        --     header = Lang:t('menus.test_header'),
+                        --     txt = Lang:t('menus.managed_test_txt'),
+                        --     icon = "fa-solid fa-user-plus",
+                        --     params = {
+                        --         event = 'qb-vehicleshop:client:openIdMenu',
+                        --         args = {
+                        --             vehicle = Config.Shops[insideShop]["ShowroomVehicles"][ClosestVehicle].chosenVehicle,
+                        --             type = 'testDrive'
+                        --         }
+                        --     }
+                        -- },
                         {
                             header = Lang:t('menus.managed_sell_header'),
                             txt = Lang:t('menus.managed_sell_txt'),

@@ -151,6 +151,7 @@ end
 local function hackui(anim)
 	local ped = PlayerPedId()
 	FreezeEntityPosition(ped, true)
+	local p = promise.new()
 	if Config.hackui == "both" then
 		if test() and test2(anim) and test() then
 			FreezeEntityPosition(ped, false)
@@ -164,9 +165,10 @@ local function hackui(anim)
 		return true
 	elseif Config.hackui == "ps-ui" then
 		exports['ps-ui']:Circle(function(success)
+			p:resolve(success)
 			FreezeEntityPosition(ped, false)
-			return success
 		end, Config.psuiNumberOfCircles, Config.psuiMS) -- NumberOfCircles, MS
+		return Citizen.Await(p)
 	elseif Config.hackui == "qb-skillbar" then
 		local Skillbar = exports['qb-skillbar']:GetSkillbarObject()
 		Skillbar.Start({
@@ -176,7 +178,7 @@ local function hackui(anim)
 		}, function()
 			if succeededAttempts + 1 >= neededAttempts then
 				FreezeEntityPosition(ped, false)
-				return true
+				p:resolve(true) 
 			else
 				Skillbar.Repeat({
 					duration = Config.repeatDuration,
@@ -187,10 +189,11 @@ local function hackui(anim)
 			end
 		end, function()
 			FreezeEntityPosition(ped, false)
-			return false
+			p:resolve(false) 
 		end)
+		return Citizen.Await(p)
 	else
-		QBCore.Functions.Notify("check your Config.hacku")
+		QBCore.Functions.Notify("check your Config.hackui")
 		FreezeEntityPosition(ped, false)
 		return false
 	end
@@ -1147,8 +1150,27 @@ Useitem['bonnet'] = function()
 					local coordbone = GetWorldPositionOfEntityBone(vehicle, bone)
 					DrawText3Ds(coordbone, '[~b~E~w~] - Install Bonnet') 
 					if IsControlPressed(0,38) then
-						if jeste("mechanic2") then
-							InstallBonnet()
+						if hackui("mechanic2") then
+							if Config.UseProgressbar then 
+								TriggerEvent('animations:client:EmoteCommandStart', {"mechanic2"})
+								if lib.progressBar({
+									duration = 5000,
+									label = 'Installing bonnet',
+									useWhileDead = false,
+									canCancel = false,
+									disable = {
+										move = true,
+										car = true,
+										combat = true,
+										mouse = false,
+									},
+								}) then
+									InstallBonnet()
+								end
+								TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+							else
+								InstallBonnet()
+							end
 						else
 							QBCore.Functions.Notify(Lang:t('error.fail'),'error')
 						end
@@ -1205,8 +1227,27 @@ Useitem['trunk'] = function()
 					local coordbone = GetWorldPositionOfEntityBone(vehicle, bone)
 					DrawText3Ds(coordbone, '[~b~E~w~] - Install Trunk '..bone)
 					if IsControlPressed(0,38) then
-						if jeste("mechanic2") then
-							InstallTrunk()
+						if hackui("mechanic2") then
+							if Config.UseProgressbar then 
+								TriggerEvent('animations:client:EmoteCommandStart', {"mechanic2"})
+								if lib.progressBar({
+									duration = 5000,
+									label = 'Installing Trunk',
+									useWhileDead = false,
+									canCancel = false,
+									disable = {
+										move = true,
+										car = true,
+										combat = true,
+										mouse = false,
+									},
+								}) then
+									InstallTrunk()
+								end
+								TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+							else
+								InstallTrunk()
+							end
 						else
 							QBCore.Functions.Notify(Lang:t('error.fail'),"error")
 						end
@@ -1300,8 +1341,27 @@ Useitem['door'] = function()
 						end
 					end
 					if IsControlPressed(0,38) then
-						if jeste("pull") then
-							InstallDoor(closest)
+						if hackui("pull") then
+							if Config.UseProgressbar then 
+								TriggerEvent('animations:client:EmoteCommandStart', {"pull"})
+								if lib.progressBar({
+									duration = 5000,
+									label = 'Installing Door',
+									useWhileDead = false,
+									canCancel = false,
+									disable = {
+										move = true,
+										car = true,
+										combat = true,
+										mouse = false,
+									},
+								}) then
+									InstallDoor(closest)
+								end
+								TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+							else
+								InstallDoor(closest)
+							end
 						else
 							QBCore.Functions.Notify(Lang:t('error.fail'),"error")
 						end
@@ -1366,8 +1426,27 @@ Useitem['wheel'] = function()
 						end
 					end
 					if IsControlPressed(0,38) then
-						if jeste("mechanic4") then
-							InstallWheel()
+						if hackui("mechanic3") then
+							if Config.UseProgressbar then 
+								TriggerEvent('animations:client:EmoteCommandStart', {"mechanic3"})
+								if lib.progressBar({
+									duration = 5000,
+									label = 'Installing Wheel',
+									useWhileDead = false,
+									canCancel = false,
+									disable = {
+										move = true,
+										car = true,
+										combat = true,
+										mouse = false,
+									},
+								}) then
+									InstallWheel()
+								end
+								TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+							else
+								InstallWheel()
+							end
 						else
 							QBCore.Functions.Notify(Lang:t('error.fail'),"error")
 						end
@@ -1502,8 +1581,27 @@ Useitem['brake'] = function()
 						end
 					end
 					if IsControlPressed(0,38) then
-						if jeste("mechanic4") then
-							InstallBrake()
+						if hackui("mechanic3") then
+							if Config.UseProgressbar then 
+								TriggerEvent('animations:client:EmoteCommandStart', {"mechanic3"})
+								if lib.progressBar({
+									duration = 5000,
+									label = 'Installing Brake',
+									useWhileDead = false,
+									canCancel = false,
+									disable = {
+										move = true,
+										car = true,
+										combat = true,
+										mouse = false,
+									},
+								}) then
+									InstallBrake()
+								end
+								TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+							else
+								InstallBrake()
+							end
 						else
 							QBCore.Functions.Notify(Lang:t('error.fail'),"error")
 						end
@@ -1590,8 +1688,27 @@ Useitem['seat'] = function()
 						end
 					end
 					if IsControlPressed(0,38) then
-						if jeste("pull") then
-							InstallSeat()
+						if hackui("pull") then
+							if Config.UseProgressbar then 
+								TriggerEvent('animations:client:EmoteCommandStart', {"pull"})
+								if lib.progressBar({
+									duration = 5000,
+									label = 'Installing Seat',
+									useWhileDead = false,
+									canCancel = false,
+									disable = {
+										move = true,
+										car = true,
+										combat = true,
+										mouse = false,
+									},
+								}) then
+									InstallSeat()
+								end
+								TriggerEvent('animations:client:EmoteCommandStart', {"c"})
+							else
+								InstallSeat()
+							end
 						else
 							QBCore.Functions.Notify(Lang:t('error.fail'),"error")
 						end
@@ -1874,7 +1991,7 @@ RegisterNetEvent('don-carbuild:client:newcar', function(model)
 		RequestModel(hash)
 		Citizen.Wait(1)
 	end
-	local spawn = Config.SpawnNewCar
+	local spawn = vector3(-1267.15, -3013.3, -48.49)
 	local appliance = CreateObject(hash,spawn, true, true)
 	while not DoesEntityExist(appliance) do Wait(0) end
 	local moveSpeed = 0.001
@@ -1937,25 +2054,48 @@ RegisterNetEvent('don-carbuild:client:newcar', function(model)
 				plate = string.gsub(tostring(plate), '^%s*(.-)%s*$', '%1')
 				local wheels = {}
 				local brakes = {}
-				
-				for tireid = 0, GetVehicleNumberOfWheels(vehicle) -1 do
-					wheels[tireid] = 1
-					brakes[tireid] = 1
+				local data = {}
+				if QBCore.Shared.Vehicles[model]["category"] == "motorcycles" then
+					for tireid = 0, GetVehicleNumberOfWheels(vehicle) -1 do
+						wheels[tireid] = 0
+						brakes[tireid] = 0
+					end
+					data = {
+						plate = plate,
+						doors = 0,
+						seat = 0,
+						trunk = GetEntityBoneIndexByName(vehicle,'boot') ~= -1 and 1 or 0,
+						exhaust = GetEntityBoneIndexByName(vehicle,'exhaust') ~= -1 and 1 or 0,
+						bonnet = GetEntityBoneIndexByName(vehicle,'bonnet') ~= -1 and 1 or 0,
+						wheel = wheels,
+						brake = brakes,
+						model = model,
+						coord = coord,
+						heading = heading,
+						paint = table.pack(GetVehicleCustomPrimaryColour(vehicle))
+					}
+				else
+					for tireid = 0, GetVehicleNumberOfWheels(vehicle) -1 do
+						wheels[tireid] = 1
+						brakes[tireid] = 1
+					end
+					print(GetNumberOfVehicleDoors(vehicle))
+					print(GetNumSeat(vehicle))
+					data = {
+						plate = plate,
+						doors = GetNumberOfVehicleDoors(vehicle),
+						seat = GetNumSeat(vehicle),
+						trunk = GetEntityBoneIndexByName(vehicle,'boot') ~= -1 and 1 or 0,
+						exhaust = GetEntityBoneIndexByName(vehicle,'exhaust') ~= -1 and 1 or 0,
+						bonnet = GetEntityBoneIndexByName(vehicle,'bonnet') ~= -1 and 1 or 0,
+						wheel = wheels,
+						brake = brakes,
+						model = model,
+						coord = coord,
+						heading = heading,
+						paint = table.pack(GetVehicleCustomPrimaryColour(vehicle))
+					}
 				end
-				local data = {
-					plate = plate,
-					doors = GetNumberOfVehicleDoors(vehicle),
-					seat = GetNumSeat(vehicle),
-					trunk = GetEntityBoneIndexByName(vehicle,'boot') ~= -1 and 1 or 0,
-					exhaust = GetEntityBoneIndexByName(vehicle,'exhaust') ~= -1 and 1 or 0,
-					bonnet = GetEntityBoneIndexByName(vehicle,'bonnet') ~= -1 and 1 or 0,
-					wheel = wheels,
-					brake = brakes,
-					model = model,
-					coord = coord,
-					heading = heading,
-					paint = table.pack(GetVehicleCustomPrimaryColour(vehicle))
-				}
 				TriggerServerEvent('don-carbuild:server:newproject',data)
 				spawnprojectcars[plate] = vehicle
 				spawnprojectshell[plate] = shell

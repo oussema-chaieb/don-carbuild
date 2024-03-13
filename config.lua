@@ -6,10 +6,10 @@ Config.FinanceZone = vector3(-29.53, -1103.67, 26.42)-- Where the finance menu i
 Config.PaymentWarning = 10 -- time in minutes that player has to make payment before repo
 Config.PaymentInterval = 24 -- time in hours between payment being due
 
-Config.ligature = 20000
-Config.management = "qb-bossmenu" -- qb-bossmenu/qb-management
+Config.ligature = 1000
+Config.management = "qb-management" -- qb-bossmenu/qb-management
 Config.useenvireceipts = false
-Config.usejlcarboost = false
+Config.usejlcarboost = true
 Config.fuel = 'cdn-fuel'
 Config.DebugPoly = false
 Config.Job = "cardealer"
@@ -28,15 +28,16 @@ Config.ExitTargetIcon = "far fa-clipboard"
 Config.ExitTargetLabel = "take the elevator"
 
 Config.SpawnNewCar = vector3(-1267.15, -3013.3, -48.49)
-Config.DeliveryPoint = vector3(-345.01, -1299.16, 31.38)
+Config.DeliveryPoint = vector3(-49.51, -1687.65, 29.47)
 Config.SpawnDelivery = vector4(140.64, 6419.26, 31.36, 74.16)
 Config.DeliveryReturnPoint = vector3(44.27, 6450.53, 31.41)
 
-Config.hackui = "both" -- both is for "ps-ui" and "qb-skillbar" together // "ps-ui" / "qb-skillbar" // "none" for nothing
+Config.UseProgressbar = true
+Config.hackui = "ps-ui" -- both is for "ps-ui" and "qb-skillbar" together // "ps-ui" / "qb-skillbar" // "none" for nothing
 
-Config.duration = math.random(7500, 15000)
-Config.pos = math.random(10, 30)
-Config.width = math.random(10, 20)
+Config.duration = math.random(7500, 35000)
+Config.pos = math.random(10, 50)
+Config.width = math.random(10, 40)
 
 Config.repeatDuration = math.random(500, 1000)
 Config.repeatPos = math.random(10, 30)
@@ -348,13 +349,13 @@ Config.Shops = {
         ['Type'] = 'managed', -- meaning a real player has to sell the car
         ['Zone'] = {
             ['Shape'] = {
-                vector2(-314.6330871582, -1354.16015625),
-                vector2(-339.40869140625, -1354.3762207031),
-                vector2(-338.15167236328, -1385.7626953125),
-                vector2(-314.20419311523, -1385.5998535156)
+                vector2(-38.774532318115, -1674.3421630859),
+                vector2(-46.206192016602, -1667.7785644531),
+                vector2(-22.460584640503, -1638.8262939453),
+                vector2(-14.602793693542, -1645.7783203125)
             },
-            ['minZ'] = 29.646457672119,
-            ['maxZ'] = 34.516143798828,
+            ['minZ'] = 27.646457672119,
+            ['maxZ'] = 32.516143798828,
             ['size'] = 2.75 -- size of the vehicles zones
         },
         ['Job'] = 'cardealer', -- Name of job or none
@@ -363,37 +364,31 @@ Config.Shops = {
         ['blipSprite'] = 326, -- Blip sprite
         ['blipColor'] = 3, -- Blip color
         ['TestDriveTimeLimit'] = 0.5,
-        ['Location'] = vector3(-320.03, -1369.83, 31.87),
-        ['ReturnLocation'] = vector3(-320.03, -1369.83, 31.87),
-        ['VehicleSpawn'] = vector4(-346.82, -1358.84, 31.3, 359.8),
-        ['TestDriveSpawn'] = vector4(-346.82, -1358.84, 31.3, 359.8), -- Spawn location for test drive
+        ['Location'] = vector3(-25.59, -1650.68, 29.49),
+        ['ReturnLocation'] = vector3(-25.59, -1650.68, 29.49),
+        ['VehicleSpawn'] = vector4(-11.99, -1666.74, 29.49, 135.24),
+        ['TestDriveSpawn'] = vector4(-11.99, -1666.74, 29.49, 135.24), -- Spawn location for test drive
         ['ShowroomVehicles'] = {
             [1] = {
-                coords = vector4(-333.27, -1358.01, 31.0, 220.79),
+                coords = vector4(-22.68, -1644.2, 28.45, 20.16),
                 defaultVehicle = 'sultan2',
                 chosenVehicle = 'sultan2'
             },
             [2] = {
-                coords = vector4(-319.28, -1360.13, 31.02, 141.73),
+                coords = vector4(-42.27, -1668.35, 28.45, 73.11),
                 defaultVehicle = 'issi7',
                 chosenVehicle = 'issi7'
             },
             [3] = {
-                coords = vector4(-320.18, -1381.68, 31.02, 41.05),
+                coords = vector4(-36.96, -1661.36, 28.45, 70.43),
                 defaultVehicle = 'caracara2',
                 chosenVehicle = 'caracara2'
             },
             [4] = {
-                coords = vector4(-332.26, -1380.03, 30.99, 327.13),
+                coords = vector4(-32.12, -1655.51, 28.45, 82.83),
                 defaultVehicle = 'feltzer3',
                 chosenVehicle = 'feltzer3'
             },
-            [5] = {
-                coords = vector4(-326.4, -1369.95, 31.4, 237.76),
-                defaultVehicle = 'italigto',
-                chosenVehicle = 'italigto'
-            },
-
         }
     }, -- Add your next table under this comma
     ['boats'] = {

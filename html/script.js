@@ -113,7 +113,7 @@ window.addEventListener("message", function (event) {
       var info = event.data.info;
       if (info) {
         document.getElementById("model").innerHTML = info.model;
-        document.getElementById("category").innerHTML = info.categoryLabel;
+        document.getElementById("category").innerHTML = info.category;
       }
     } else {
       document.getElementById("perf").style.display = "none";

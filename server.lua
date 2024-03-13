@@ -84,18 +84,30 @@ local function UpdateProject(data,xPlayer,props)
             end
             if k == 'door' and data.seat then
                 local doordata = {}
-                for i = 0,3 do
-                doordata[tostring(i)] = 1
-                if data.seat == 2 and i == 2 or data.seat == 2 and i == 3 then
-                    doordata[tostring(i)] = 0
-                end
+                if data.seat == 0 then
+                    for i = 0,3 do
+                        doordata[tostring(i)] = 0
+                    end
+                else
+                    for i = 0,3 do
+                        doordata[tostring(i)] = 1
+                        if data.seat == 2 and i == 2 or data.seat == 2 and i == 3 then
+                            doordata[tostring(i)] = 0
+                        end
+                    end
                 end
                 newproject[k] = doordata
             end
             if k == 'seat' and data.seat then
                 local seatdata = {}
-                for i = 0,data.seat-1 do
-                seatdata[tostring(i-1)] = 1
+                if data.seat == 0 then
+                    for i = 0,3 do
+                        seatdata[tostring(i)] = 0
+                    end
+                else
+                    for i = 0,data.seat-1 do
+                        seatdata[tostring(i-1)] = 1
+                    end
                 end
                 newproject[k] = seatdata
             end

@@ -313,21 +313,21 @@ QBCore.Commands.Add('transfervehicle', Lang:t('general.command_transfervehicle')
     local targetcid = target.PlayerData.citizenid
     local targetlicense = QBCore.Functions.GetIdentifier(target.PlayerData.source, 'license')
     if not target then return TriggerClientEvent('QBCore:Notify', src, Lang:t('error.buyerinfo'), 'error') end
-    local item = player.Functions.GetItemByName('vehicleproprety')
-    local mod = GetHashKey(item.info.vehicle)
+    -- local item = player.Functions.GetItemByName('vehicleproprety')
+    -- local mod = GetHashKey(item.info.vehicle)
 
-    if item then 
-        if item.info.firstname == Player.PlayerData.charinfo.firstname and item.info.lastname == Player.PlayerData.charinfo.lastname and mod == model and item.info.vehicleplate == plate then
-            player.Functions.RemoveItem('vehicleproprety', 1)
-        else
-            return TriggerClientEvent('QBCore:Notify', src, Lang:t('error.vehinformation'), 'error') 
-        end
-    else
-        return TriggerClientEvent('QBCore:Notify', src, Lang:t('error.manquevehprop'), 'error') 
-    end
+    -- if item then 
+    --     if item.info.firstname == Player.PlayerData.charinfo.firstname and item.info.lastname == Player.PlayerData.charinfo.lastname and mod == model and item.info.vehicleplate == plate then
+    --         player.Functions.RemoveItem('vehicleproprety', 1)
+    --     else
+    --         return TriggerClientEvent('QBCore:Notify', src, Lang:t('error.vehinformation'), 'error') 
+    --     end
+    -- else
+    --     return TriggerClientEvent('QBCore:Notify', src, Lang:t('error.manquevehprop'), 'error') 
+    -- end
     if not sellAmount then
         MySQL.update('UPDATE player_vehicles SET citizenid = ?, license = ? WHERE plate = ?', {targetcid, targetlicense, plate})
-        TriggerEvent('qb-vehicleshop:server:givedocument', target.PlayerData.charinfo.firstname, target.PlayerData.charinfo.lastname, vehicle, plate, buyerId)
+        --TriggerEvent('qb-vehicleshop:server:givedocument', target.PlayerData.charinfo.firstname, target.PlayerData.charinfo.lastname, vehicle, plate, buyerId)
         TriggerClientEvent('QBCore:Notify', src, Lang:t('success.gifted'), 'success')
         TriggerClientEvent('vehiclekeys:client:SetOwner', buyerId, plate)
         TriggerClientEvent('QBCore:Notify', buyerId, Lang:t('success.received_gift'), 'success')

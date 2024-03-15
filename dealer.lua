@@ -634,7 +634,7 @@ RegisterNetEvent('qb-vehicleshop:client:buyShowroomVehicle', function(vehicle, p
         TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
         TriggerServerEvent("qb-vehicletuning:server:SaveVehicleProps", QBCore.Functions.GetVehicleProperties(veh))
     end, vehicle, Config.Shops[tempShop]["VehicleSpawn"], true)
-    TriggerServerEvent('qb-vehicleshop:server:givedocument', PlayerFirstName, PlayerLastName, vehicle, plate)
+    --TriggerServerEvent('qb-vehicleshop:server:givedocument', PlayerFirstName, PlayerLastName, vehicle, plate)
 end)
 
 RegisterNetEvent('qb-vehicleshop:client:openIdMenu', function(data)

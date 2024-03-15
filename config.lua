@@ -6,10 +6,10 @@ Config.FinanceZone = vector3(-29.53, -1103.67, 26.42)-- Where the finance menu i
 Config.PaymentWarning = 10 -- time in minutes that player has to make payment before repo
 Config.PaymentInterval = 24 -- time in hours between payment being due
 
-Config.ligature = 1000
+Config.ligature = 0
 Config.management = "qb-management" -- qb-bossmenu/qb-management
 Config.useenvireceipts = false
-Config.usejlcarboost = true
+Config.usejlcarboost = false
 Config.fuel = 'cdn-fuel'
 Config.DebugPoly = false
 Config.Job = "cardealer"
@@ -33,7 +33,15 @@ Config.SpawnDelivery = vector4(140.64, 6419.26, 31.36, 74.16)
 Config.DeliveryReturnPoint = vector3(44.27, 6450.53, 31.41)
 
 Config.UseProgressbar = true
-Config.hackui = "ps-ui" -- both is for "ps-ui" and "qb-skillbar" together // "ps-ui" / "qb-skillbar" // "none" for nothing
+Config.hackui = "TN-minigame" -- both is for "ps-ui" and "qb-skillbar" together // "ps-ui" / "qb-skillbar" // "none" for nothing // TN-minigame
+Config.TNminigame = "Laundromat" -- don't touch it if you won't use TN-minigame // Laundromat / RepairKit / RoofRunning
+
+Config.LaundromatTime = 50 -- setting Laundromat time for TN-minigame
+Config.RepairKitTime = 5 -- setting RepairKit time for TN-minigame
+Config.RepairKitCount = 30 -- setting RepairKit Count for TN-minigame
+Config.RoofRunningTime = 25 -- setting RoofRunning time for TN-minigame
+Config.RoofRunningCols = 11 -- setting RoofRunning Cols for TN-minigame
+Config.RoofRunningRows = 8 -- setting RoofRunning Rows for TN-minigame
 
 Config.duration = math.random(7500, 35000)
 Config.pos = math.random(10, 50)

@@ -192,6 +192,26 @@ local function hackui(anim)
 			p:resolve(false) 
 		end)
 		return Citizen.Await(p)
+	elseif Config.hackui == "TN-minigame" then
+		if Config.TNminigame == "Laundromat" then
+			exports['TN-minigame']:Laundromat(function(success)
+				p:resolve(success)
+				FreezeEntityPosition(ped, false)
+			end, Config.LaundromatTime)
+			return Citizen.Await(p)
+		elseif Config.TNminigame == "RepairKit" then
+			exports['TN-minigame']:RepairKit(function(success)
+				p:resolve(success)
+				FreezeEntityPosition(ped, false)
+			end, Config.RepairKitTime, Config.RepairKitCount)
+			return Citizen.Await(p)
+		elseif Config.TNminigame == "RoofRunning" then
+			exports['TN-minigame']:RoofRunning(function(success)
+				p:resolve(success)
+				FreezeEntityPosition(ped, false)
+			end, Config.RoofRunningTime, Config.RoofRunningCols, Config.RoofRunningRows)
+			return Citizen.Await(p)
+		end
 	else
 		QBCore.Functions.Notify("check your Config.hackui")
 		FreezeEntityPosition(ped, false)

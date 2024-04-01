@@ -70,24 +70,23 @@ RegisterNetEvent('qb-vehicleshop:server:deleteVehicle', function (netId)
     DeleteEntity(vehicle)
 end)
 
-RegisterServerEvent('qb-vehicleshop:server:owncar', function(vehicle)
-    local stock = nil
-    local isthere = false
-    local buycar = MySQL.query.await('SELECT * FROM vehicle_stock WHERE car = ?', { vehicle })
-    for r, s in pairs(buycar) do
-        if s.car == vehicle then
-            stock = s.stock
-            MySQL.query('UPDATE vehicle_stock SET stock = ? WHERE car = ?', {stock + 1 , vehicle})
-            --print("updated", vehicle)
-            --print(s.car, 'exists') 
-            isthere = true
+RegisterServerEvent('qb-vehicleshop:server:owncar', function(data)
+    for k,v in pairs(data) do
+        Wait(700)
+        local stock = nil
+        local isthere = false
+        local buycar = MySQL.query.await('SELECT * FROM vehicle_stock WHERE car = ?', { v.model })
+        for r, s in pairs(buycar) do
+            if s.car == v.model then
+                stock = s.stock
+                print(stock)
+                MySQL.query('UPDATE vehicle_stock SET stock = ? WHERE car = ?', {stock + 1 , v.model})
+                isthere = true
+            end
         end
-    end
-    if isthere then
-        return
-    else
-       -- print('inserted', vehicle) 
-        MySQL.insert('INSERT INTO vehicle_stock (car, stock) VALUES (?, ?)', { vehicle, 1 })
+        if not isthere then
+            MySQL.insert('INSERT INTO vehicle_stock (car, stock) VALUES (?, ?)', { v.model, 1 })
+        end
     end
 end)
 

@@ -13,19 +13,24 @@ Config.usejlcarboost = false
 Config.fuel = 'cdn-fuel'
 Config.DebugPoly = false
 Config.Job = "cardealer"
-Config.VehMenuCircleZone = vector3(-1296.15, -3018.84, -48.67) -- maximum payments allowed
+Config.VehMenuCircleZone = vector3(-1296.15, -3018.84, -48.67) 
 Config.VehMenuTargetIcon = "fas fa-clipboard"
 Config.VehMenuTargetLabel = "new project"
 
-Config.EnterTarget = vector3(51.44, 6485.77, 31.43) -- maximum payments allowed
+Config.EnterTarget = vector3(51.44, 6485.77, 31.43) 
 Config.EnterHeading = 318.67
 Config.EnterTargetIcon = "far fa-clipboard"
 Config.EnterTargetLabel = "take the elevator"
 
-Config.ExitTarget = vector3(-1243.31, -3023.15, -48.49) -- maximum payments allowed
+Config.ExitTarget = vector3(-1243.31, -3023.15, -48.49) 
 Config.ExitHeading = 91.72
 Config.ExitTargetIcon = "far fa-clipboard"
 Config.ExitTargetLabel = "take the elevator"
+
+Config.finishedcarsTarget = vector3(-1293.83, -3022.73, -48.49)
+Config.finishedcarsHeading = 183.36
+Config.finishedcarsTargetIcon = "far fa-clipboard"
+Config.finishedcarsTargetLabel = "See finished cars"
 
 Config.SpawnNewCar = vector3(-1267.15, -3013.3, -48.49)
 Config.DeliveryPoint = vector3(-49.51, -1687.65, 29.47)
@@ -357,12 +362,12 @@ Config.Shops = {
         ['Type'] = 'managed', -- meaning a real player has to sell the car
         ['Zone'] = {
             ['Shape'] = {
-                vector2(-38.774532318115, -1674.3421630859),
-                vector2(-46.206192016602, -1667.7785644531),
-                vector2(-22.460584640503, -1638.8262939453),
-                vector2(-14.602793693542, -1645.7783203125)
+                vector2(-55.0725440979, -1101.9108886719),
+                vector2(-35.928512573242, -1109.0085449219),
+                vector2(-32.249641418457, -1097.9272460938),
+                vector2(-52.609630584717, -1087.8356933594)
             },
-            ['minZ'] = 27.646457672119,
+            ['minZ'] = 24.646457672119,
             ['maxZ'] = 32.516143798828,
             ['size'] = 2.75 -- size of the vehicles zones
         },
@@ -372,31 +377,21 @@ Config.Shops = {
         ['blipSprite'] = 326, -- Blip sprite
         ['blipColor'] = 3, -- Blip color
         ['TestDriveTimeLimit'] = 0.5,
-        ['Location'] = vector3(-25.59, -1650.68, 29.49),
-        ['ReturnLocation'] = vector3(-25.59, -1650.68, 29.49),
-        ['VehicleSpawn'] = vector4(-11.99, -1666.74, 29.49, 135.24),
-        ['TestDriveSpawn'] = vector4(-11.99, -1666.74, 29.49, 135.24), -- Spawn location for test drive
+        ['Location'] = vector3(-49.82, -1095.07, 26.42),
+        ['ReturnLocation'] = vector3(-49.82, -1095.07, 26.42),
+        ['VehicleSpawn'] = vector4(-46.64, -1113.49, 25.83, 67.04),
+        ['TestDriveSpawn'] = vector4(-46.64, -1113.49, 25.83, 67.04), -- Spawn location for test drive
         ['ShowroomVehicles'] = {
             [1] = {
-                coords = vector4(-22.68, -1644.2, 28.45, 20.16),
+                coords = vector4(-47.79, -1099.65, 25.82, 315.53),
                 defaultVehicle = 'sultan2',
                 chosenVehicle = 'sultan2'
             },
             [2] = {
-                coords = vector4(-42.27, -1668.35, 28.45, 73.11),
+                coords = vector4(-38.38, -1102.85, 25.82, 310.36),
                 defaultVehicle = 'issi7',
                 chosenVehicle = 'issi7'
-            },
-            [3] = {
-                coords = vector4(-36.96, -1661.36, 28.45, 70.43),
-                defaultVehicle = 'caracara2',
-                chosenVehicle = 'caracara2'
-            },
-            [4] = {
-                coords = vector4(-32.12, -1655.51, 28.45, 82.83),
-                defaultVehicle = 'feltzer3',
-                chosenVehicle = 'feltzer3'
-            },
+            }
         }
     }, -- Add your next table under this comma
     ['boats'] = {

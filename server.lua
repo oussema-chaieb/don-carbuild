@@ -1,7 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 projectcars = {}
 CreateThread(function()
-    local result = MySQL.Sync.fetchAll('SELECT * FROM don_cars', {})  
+    local result = MySQL.Sync.fetchAll('SELECT * FROM don_cars WHERE state = 0', {})  
     if result and result[1] then
         for k,v in pairs(result) do
         projectcars[v.plate] = v
@@ -38,6 +38,13 @@ local function AddOwnedVehicles(data,props,xPlayer)
     end
 end
 
+local function finishbuildingcar(data)
+    projectcars[data.plate] = nil
+    GlobalState.ProjectCars = projectcars
+    MySQL.update('UPDATE don_cars SET state = ? WHERE TRIM(plate) = ?', {1, data.plate})
+    TriggerClientEvent('don-carbuild:client:updateprojectable',-1,data.plate)
+end
+
 local function ProjectProgress(projectcars,props,xPlayer)
     local status = json.decode(projectcars.status)
     local done = true
@@ -54,7 +61,8 @@ local function ProjectProgress(projectcars,props,xPlayer)
         end
     end
     if done then
-        AddOwnedVehicles(projectcars,props,xPlayer)
+        finishbuildingcar(projectcars)
+        --AddOwnedVehicles(projectcars,props,xPlayer)
     end
 end
 
@@ -115,13 +123,15 @@ local function UpdateProject(data,xPlayer,props)
                 newproject[k] = 1
             end
         end
-        MySQL.insert('INSERT INTO don_cars (plate, identifier, paint, coord, model, status) VALUES (?, ?, ?, ?, ?, ?)', {
+        MySQL.insert('INSERT INTO don_cars (plate, identifier, paint, coord, model, status, props, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {
             plate_,
             xPlayer.PlayerData.citizenid,
             json.encode(data.paint) or '[]',
             json.encode(vector4(data.coord,data.heading)),
             data.model,
-            json.encode(newproject)
+            json.encode(newproject),
+            json.encode(props),
+            0
         })
         projectcars[plate_] = {}
         projectcars[plate_].plate = plate_
@@ -134,7 +144,7 @@ local function UpdateProject(data,xPlayer,props)
         GlobalState.ProjectCars = projectcars
     elseif result[1] then
         local status = projectcars[plate_].status
-        MySQL.update('UPDATE don_cars SET status = ?, paint = ? WHERE TRIM(plate) = ?', {status, projectcars[plate_].paint or '[]', plate_})
+        MySQL.update('UPDATE don_cars SET status = ?, paint = ?, props = ? WHERE TRIM(plate) = ?', {status, projectcars[plate_].paint or '[]', json.encode(props), plate_})
         TriggerClientEvent('don-carbuild:client:updatelocalproject',-1,projectcars[plate_])
         ProjectProgress(projectcars[plate_],props,xPlayer)
     end
@@ -164,4 +174,39 @@ end)
 
 RegisterNetEvent('don-carbuild:server:spawnshell', function(data)
     TriggerClientEvent('don-carbuild:client:newcar',source,data.model)
+end)
+
+QBCore.Functions.CreateCallback('don-carbuild:server:GetFinishedCars', function(source, cb)
+    local result = MySQL.Sync.fetchAll('SELECT * FROM don_cars WHERE state = 1', {})  
+    cb(result)
+end)
+
+QBCore.Functions.CreateCallback('don-carbuild:server:GetSelectedCars', function(source, cb)
+    local result = MySQL.Sync.fetchAll('SELECT * FROM don_cars WHERE state = 2', {})  
+    cb(result)
+end)
+
+RegisterNetEvent('don-carbuild:server:addToSelectedVehs', function(data)
+    MySQL.update('UPDATE don_cars SET state = ? WHERE TRIM(plate) = ?', { 2, data.plate})
+end)
+
+RegisterNetEvent('don-carbuild:server:startdeliver6cars', function()
+    local source = source
+    local result = MySQL.Sync.fetchAll('SELECT * FROM don_cars WHERE state = 2 LIMIT 6', {})
+    print("result")
+    print(result)
+    if result and result[1] then
+        for k,v in pairs(result) do
+            MySQL.update('UPDATE don_cars SET state = ? WHERE TRIM(plate) = ?', { 3, v.plate})
+        end
+        print("client")
+        TriggerClientEvent('don-carbuild:client:spawnalltheproject',source,result)
+    end
+end)
+
+
+RegisterNetEvent('don-carbuild:server:deletedeliveredcars', function(data)
+    for k,v in pairs(data) do 
+        MySQL.query('DELETE FROM don_cars WHERE TRIM(UPPER(plate)) = ?',{v.plate})
+    end
 end)

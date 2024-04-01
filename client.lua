@@ -2,7 +2,6 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local spawnprojectcars = {}
 local spawnprojectshell = {}
 local PlayerData = {}
-local blips = {}
 local Useitem = {}
 local benches_entites = {}
 local inground = {}
@@ -19,11 +18,6 @@ local UseBusy = false
 local currentobject = nil
 local standmodel , enginemodel = nil, nil
 local target = nil
-local abandonado = 0
-local truckblip = nil
-local deliveryblip = nil
-local transport = nil
-local trailertransport = nil
 local hashh = 1246927682
 local hashhh = "gr_prop_gr_tool_chest_01a"
 local SucceededAttempts = 0
@@ -297,6 +291,21 @@ CreateThread(function()
 			action = function()
 				ExitGarage()
 			end,
+        }},
+        distance = 1.5
+    })
+	exports['qb-target']:AddBoxZone("donshowfinishedcars", Config.finishedcarsTarget, 1.5, 1.5, {
+        name="donshowfinishedcars",
+        heading=Config.finishedcarsHeading,
+        debugPoly=Config.DebugPoly,
+        minZ=Config.finishedcarsTarget.z-1,
+        maxZ=Config.finishedcarsTarget.z+1
+    }, {
+        options = {{
+            icon = Config.finishedcarsTargetIcon,
+            label = Config.finishedcarsTargetLabel,
+			event = "don-carbuild:client:openmanagefinishcars",
+			job = Config.Job
         }},
         distance = 1.5
     })
@@ -1534,9 +1543,6 @@ Useitem['exhaust'] = function()
 								QBCore.Functions.Notify(Lang:t('error.fail'),"error")
 							end
 						end, 3, 10)
-						--[[if Interaction('exhaust') then
-							InstallExhaust()
-						end]]
 						install = false
 						DeleteObject(currentobject)
 						use = 'exhaust'
@@ -1588,9 +1594,9 @@ Useitem['brake'] = function()
 				'wheel_rr'
 			}
 			local brake = data.status.brake
-			for k,v in pairs(brake) do
+			--for k,v in pairs(brake) do
 				--print(k,v)
-			end
+			--end
 			while dist < radius and install do
 				if dist < 4 then
 					for k,v in pairs(doors) do
@@ -1875,65 +1881,138 @@ Useitem['engine'] = function()
 	UseBusy = false
 end
 
-local function DeliveryStart(point,spawn,car,veh)
+local attachvehscoords = {
+	[1] = {
+		offsetX = 0.0,
+		offsetY = 0.0,
+		offsetZ = 0.0,
+		coordsX = 0.103679,
+		coordsY = 4.122245,
+		coordsZ = 2.789666 + 0.11,
+	},
+	[2] = {
+		offsetX = 0.0,
+		offsetY = 0.0,
+		offsetZ = 0.0,
+		coordsX = -0.065719313919,
+		coordsY = -0.2448926866,
+		coordsZ = 2.789666 + 0.21,
+	},
+	[3] = {
+		offsetX = 0.0,
+		offsetY = 0.0,
+		offsetZ = 0.0,
+		coordsX = -0.00767484,
+		coordsY = -5.382770538,
+		coordsZ = 2.789666 + 0.25,
+	},
+	[4] = {
+		offsetX = 0.0,
+		offsetY = 0.0,
+		offsetZ = 0.0,
+		coordsX = 0.05493262,
+		coordsY = 4.64220714,
+		coordsZ = 1.2231869077,
+	},
+	[5] = {
+		offsetX = 0.0,
+		offsetY = 0.0,
+		offsetZ = 0.0,
+		coordsX = -0.037333898246288,
+		coordsY = 0.025384655222,
+		coordsZ = 1.265057525,
+	},
+	[6] = {
+		offsetX = 0.0,
+		offsetY = 0.0,
+		offsetZ = 0.0,
+		coordsX = -0.0232117176,
+		coordsY = -5.13795423,
+		coordsZ = 1.2859000539,
+	}
+}
+local vehiclees = {}
+local truckblip = {}
+local deliveryblip = {}
+local trailertransport = {}
+local transport = {}
+local j = 0
+
+RegisterNetEvent('don-carbuild:client:spawnalltheproject', function(data)
+	j = j + 1
 	RequestModel(GetHashKey('phantom'))
 	while not HasModelLoaded(GetHashKey('phantom')) do
-		Citizen.Wait(0)
+		Wait(0)
 	end
 	RequestModel(GetHashKey('tr2'))
 	while not HasModelLoaded(GetHashKey('tr2')) do
-		Citizen.Wait(0)
+		Wait(0)
 	end
-	--ClearAreaOfVehicles(loc.Location.x, loc.Location.y, loc.Location.z, 15.0, false, false, false, false, false) 	
-	transport = CreateVehicle(GetHashKey('phantom'), spawn.x,spawn.y,spawn.z,spawn.w, true, true)
-	SetEntityAsMissionEntity(transport)
-	SetEntityHeading(transport, spawn.w)
-	TriggerEvent('vehiclekeys:client:SetOwner', QBCore.Functions.GetPlate(transport))
-	trailertransport = CreateVehicle(GetHashKey('tr2'), spawn.x,spawn.y-1,spawn.z,spawn.w, true, true)
-	SetEntityAsMissionEntity(trailertransport)
-	SetEntityHeading(trailertransport, spawn.w)
-	AttachVehicleToTrailer(transport,trailertransport, 1.00)
-	local vehRotation = GetEntityRotation(trailertransport)
-	local localcoords = GetOffsetFromEntityGivenWorldCoords(trailertransport, GetEntityCoords(car))
-	--print(vehRotation)
-	--print(localcoords)
-	AttachVehicleOnToTrailer(car, trailertransport, 0.0, 0.0, 0.0, 0.103679, 4.122245, 2.789666 + 0.08, vehRotation.x, vehRotation.y, 0.0, false)
-	truckblip = AddBlipForEntity(transport)
-	SetBlipSprite(truckblip,477)
-	SetBlipColour(truckblip,26)
-	SetBlipAsShortRange(truckblip,false)
+	transport[j] = CreateVehicle(GetHashKey('phantom'), Config.SpawnDelivery.x,Config.SpawnDelivery.y,Config.SpawnDelivery.z,Config.SpawnDelivery.w, true, true)
+	SetEntityAsMissionEntity(transport[j])
+	SetEntityHeading(transport[j], Config.SpawnDelivery.w)
+	TriggerEvent('vehiclekeys:client:SetOwner', QBCore.Functions.GetPlate(transport[j]))
+	trailertransport[j] = CreateVehicle(GetHashKey('tr2'), Config.SpawnDelivery.x,Config.SpawnDelivery.y-1,Config.SpawnDelivery.z,Config.SpawnDelivery.w, true, true)
+	SetEntityAsMissionEntity(trailertransport[j])
+	SetEntityHeading(trailertransport[j], Config.SpawnDelivery.w)
+	AttachVehicleToTrailer(transport[j],trailertransport[j], 1.00)
+	local vehRotation = GetEntityRotation(trailertransport[j])
+	local i = 1
+	for k,v in pairs(data) do
+		local hash = v.model
+		RequestModel(hash)
+		while not HasModelLoaded(hash) do
+			RequestModel(hash)
+			Citizen.Wait(1)
+		end
+		local coord = json.decode(v.coord)
+		vehiclees[k] = CreateVehicle(hash,vector3(coord.x,coord.y,coord.z),coord.w, true, true)
+		SetVehicleOnGroundProperly(vehiclees[k])
+		SetVehicleNumberPlateText(vehiclees[k],v.plate)
+		SetVehicleProp(vehiclees[k],json.decode(v.props))
+		local localcoords = GetOffsetFromEntityGivenWorldCoords(trailertransport[j], GetEntityCoords(vehiclees[k]))
+		local attcoords = attachvehscoords[i]
+		AttachVehicleOnToTrailer(vehiclees[k], trailertransport[j], attcoords.offsetX,attcoords.offsetY, attcoords.offsetZ, attcoords.coordsX, attcoords.coordsY, attcoords.coordsZ, vehRotation.x, vehRotation.y, 0.0, false)
+		i = i + 1
+		Wait(200)
+	end
+	local truckblipiden = #truckblip + 1
+	truckblip[truckblipiden] = AddBlipForEntity(transport[j])
+	SetBlipSprite(truckblip[truckblipiden],477)
+	SetBlipColour(truckblip[truckblipiden],26)
+	SetBlipAsShortRange(truckblip[truckblipiden],false)
 	BeginTextCommandSetBlipName("STRING")
 	AddTextComponentSubstringPlayerName('My Delivery Truck')
-	EndTextCommandSetBlipName(truckblip)
+	EndTextCommandSetBlipName(truckblip[truckblipiden])
 	DoScreenFadeIn(333)
-	SetNewWaypoint(point)
-	deliveryblip = AddBlipForCoord(point.x,point.y,point.z)
-	SetBlipSprite(deliveryblip,358)
-	SetBlipColour(deliveryblip,26)
-	SetBlipAsShortRange(deliveryblip,false)
+	SetNewWaypoint(Config.DeliveryPoint)
+	local deliveryblipiden = #deliveryblip + 1
+	deliveryblip[deliveryblipiden] = AddBlipForCoord(Config.DeliveryPoint.x,Config.DeliveryPoint.y,Config.DeliveryPoint.z)
+	SetBlipSprite(deliveryblip[deliveryblipiden],358)
+	SetBlipColour(deliveryblip[deliveryblipiden],26)
+	SetBlipAsShortRange(deliveryblip[deliveryblipiden],false)
 	BeginTextCommandSetBlipName("STRING")
 	AddTextComponentSubstringPlayerName('My Delivery Point')
-	EndTextCommandSetBlipName(deliveryblip)
-	SetBlipRoute(deliveryblip,true)
-	SetBlipRouteColour(deliveryblip,3)
-	target = point
-	while DoesEntityExist(trailertransport) do
-		Wait(10)
-		if #(target - GetEntityCoords(trailertransport)) < 10 and GetVehiclePedIsIn(PlayerPedId()) == transport then
+	EndTextCommandSetBlipName(deliveryblip[deliveryblipiden])
+	SetBlipRoute(deliveryblip[deliveryblipiden],true)
+	SetBlipRouteColour(deliveryblip[deliveryblipiden],3)
+	while DoesEntityExist(trailertransport[j]) do
+		Wait(0)
+		if #(Config.DeliveryPoint - GetEntityCoords(trailertransport[j])) < 10 and GetVehiclePedIsIn(PlayerPedId()) == transport[j] then
 			exports['qb-core']:DrawText(Lang:t('commands.turnbacktruck'))
             if IsControlJustReleased(0, 38) then
                 exports['qb-core']:KeyPressed(38)
                 exports['qb-core']:HideText()
-				TriggerEvent("don-carbuild:client:deliverydone",veh)
+				TriggerEvent("don-carbuild:client:deliverydone",trailertransport[j], deliveryblipiden, data, transport[j])
             end
 		else
 			exports['qb-core']:HideText()
 		end
-		if not DoesEntityExist(trailertransport) then
+		if not DoesEntityExist(trailertransport[j]) then
 			break
 		end
 	end
-end
+end)
 
 RegisterNetEvent('don-carbuild:client:vehmenu', function()
     local categomenu = {}
@@ -1995,6 +2074,110 @@ RegisterNetEvent('don-carbuild:client:openVehCats', function(data)
         end
     end
     exports['qb-menu']:openMenu(carMenu)
+end)
+
+local function GetFinishedCars()
+    local p = promise.new()
+    QBCore.Functions.TriggerCallback('don-carbuild:server:GetFinishedCars', function(result)
+        p:resolve(result)
+    end)
+    return Citizen.Await(p)
+end
+
+local function GetSelectedCars()
+    local p = promise.new()
+    QBCore.Functions.TriggerCallback('don-carbuild:server:GetSelectedCars', function(result)
+        p:resolve(result)
+    end)
+    return Citizen.Await(p)
+end
+
+RegisterNetEvent('don-carbuild:client:openmanagefinishcars', function()
+    local manageCarMenu = {
+        {
+            header = 'Manage Finished Cars',
+            isMenuHeader = true,
+            icon = "fa-solid fa-circle-info",
+        }
+    }
+	manageCarMenu[#manageCarMenu + 1] = {
+		header = "Finished Cars",
+		icon = "fa-solid fa-car-side",
+		txt = "Select cars that you want to deliver",
+		params = {
+			event = "don-carbuild:client:openfinishcars",
+		}
+	}
+	manageCarMenu[#manageCarMenu + 1] = {
+		header = "Selected Cars",
+		icon = "fa-solid fa-car-side",
+		txt = "See all selected cars",
+		params = {
+			event = "don-carbuild:client:openselectedcars",
+		}
+	}
+    exports['qb-menu']:openMenu(manageCarMenu)
+end)
+
+RegisterNetEvent('don-carbuild:client:openfinishcars', function()
+    local finishCarMenu = {
+        {
+            header = 'Finished Cars',
+            isMenuHeader = true,
+            icon = "fa-solid fa-circle-info",
+        }
+    }
+	local cars = GetFinishedCars()
+    for k, v in pairs(cars) do
+		finishCarMenu[#finishCarMenu + 1] = {
+			header = QBCore.Shared.Vehicles[v.model].name,
+			icon = "fa-solid fa-car-side",
+			txt = "Add to selected cars to deliver",
+			params = {
+				event = "don-carbuild:client:addToSelectedVehs",
+				args = {
+					model = v.model,
+					plate = v.plate,
+				}
+			}
+		}
+    end
+    exports['qb-menu']:openMenu(finishCarMenu)
+end)
+
+RegisterNetEvent('don-carbuild:client:openselectedcars', function()
+    local finishCarMenu = {
+        {
+            header = 'Selected Cars',
+            isMenuHeader = true,
+            icon = "fa-solid fa-circle-info",
+        }
+    }
+	local cars = GetSelectedCars()
+    for k, v in pairs(cars) do
+		finishCarMenu[#finishCarMenu + 1] = {
+			header = QBCore.Shared.Vehicles[v.model].name,
+			icon = "fa-solid fa-car-side",
+			disabled = true
+		}
+    end
+	finishCarMenu[#finishCarMenu + 1] = {
+		header = "start delivering",
+		icon = "fa-solid fa-car-side",
+		txt = "Take the first 6 Cars in this list",
+		params = {
+			event = "don-carbuild:client:startdeliver6cars",
+		}
+	}
+    exports['qb-menu']:openMenu(finishCarMenu)
+end)
+
+RegisterNetEvent('don-carbuild:client:startdeliver6cars', function()
+	TriggerServerEvent("don-carbuild:server:startdeliver6cars")
+end)
+
+RegisterNetEvent('don-carbuild:client:addToSelectedVehs', function(data)
+	TriggerServerEvent("don-carbuild:server:addToSelectedVehs",data)
 end)
 
 RegisterNetEvent('don-carbuild:client:newprojet', function(data)
@@ -2157,9 +2340,6 @@ end)
 RegisterNetEvent('don-carbuild:client:updateprojectable', function(plate)
 	DeleteEntity(spawnprojectcars[plate] or 0)
 	DeleteEntity(spawnprojectshell[plate] or 0)
-	if blips[plate] and DoesBlipExist(blips[plate] or 0) then
-		RemoveBlip(blips[plate])
-	end
 end)
 
 RegisterNetEvent('don-carbuild:client:spawnfinishproject', function(data,props)
@@ -2217,21 +2397,6 @@ MathRound = function(value, numDecimalPlaces)
 		return math.floor((value * power) + 0.5) / (power)
 	else
 		return math.floor(value + 0.5)
-	end
-end
-
-VehicleBlip = function(data)
-	if blips[data.plate] == nil then
-		local blip = AddBlipForCoord(data.coord.x, data.coord.y, data.coord.z)
-		SetBlipSprite (blip, 562)
-		SetBlipDisplay(blip, 4)
-		SetBlipScale  (blip, 0.3)
-		SetBlipColour (blip, 81)
-		SetBlipAsShortRange(blip, true)
-		BeginTextCommandSetBlipName('STRING')
-		AddTextComponentSubstringPlayerName("Project Car : "..data.model.." - "..data.plate)
-		EndTextCommandSetBlipName(blip)
-		blips[data.plate] = blip
 	end
 end
 
@@ -2442,44 +2607,42 @@ RegisterNetEvent('don-carbuild:client:usepaint', function(color)
 	PaintCar(color,getveh())
 end)
 
-RegisterNetEvent('don-carbuild:client:deliverydone', function(car)
-	--finishdelivery = true
-	if #(target - GetEntityCoords(trailertransport)) < 10 then
-		DeleteEntity(trailertransport)
-		SetBlipRoute(deliveryblip,false)
-		if DoesBlipExist(deliveryblip) then
-			RemoveBlip(deliveryblip)
-		end
-		QBCore.Functions.Notify(Lang:t('success.turnbacktruck'),"success")
-		Wait(2000)
-		deliveryblip = AddBlipForCoord(44.27, 6450.53, 31.41)
-		SetBlipSprite(deliveryblip,358)
-		SetBlipColour(deliveryblip,26)
-		SetBlipAsShortRange(deliveryblip,false)
-		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentSubstringPlayerName('My Delivery Point')
-		EndTextCommandSetBlipName(deliveryblip)
-		SetBlipRoute(deliveryblip,true)
-		SetBlipRouteColour(deliveryblip,3)
-		SetNewWaypoint(Config.DeliveryReturnPoint)
-		TriggerServerEvent('qb-vehicleshop:server:owncar',car)
-		--print(car)
-		while DoesEntityExist(transport) do
-			Wait(10)
-			if #(Config.DeliveryReturnPoint - GetEntityCoords(transport)) < 10 and GetVehiclePedIsIn(PlayerPedId()) == transport then
-				exports['qb-core']:DrawText(Lang:t('commands.turnbacktruck'))
-				if IsControlJustReleased(0, 38) then
-					exports['qb-core']:KeyPressed(38)
-					exports['qb-core']:HideText()
-					DeleteEntity(transport)
-					SetBlipRoute(deliveryblip,false)
-					RemoveBlip(deliveryblip)
-					QBCore.Functions.Notify(Lang:t('success.moneyback'),"success")
-					TriggerServerEvent('don-carbuild:server:pay')
-				end
-			else
+RegisterNetEvent('don-carbuild:client:deliverydone', function(trailertransport,deliveryblipiden, data, transport)
+	DeleteEntity(trailertransport)
+	SetBlipRoute(deliveryblip[deliveryblipiden],false)
+	if DoesBlipExist(deliveryblip[deliveryblipiden]) then
+		RemoveBlip(deliveryblip[deliveryblipiden])
+	end
+	QBCore.Functions.Notify(Lang:t('success.turnbacktruck'),"success")
+	Wait(2000)
+	local deliveryblipid = #deliveryblip + 1
+	deliveryblip[deliveryblipid] = AddBlipForCoord(44.27, 6450.53, 31.41)
+	SetBlipSprite(deliveryblip[deliveryblipid],358)
+	SetBlipColour(deliveryblip[deliveryblipid],26)
+	SetBlipAsShortRange(deliveryblip[deliveryblipid],false)
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentSubstringPlayerName('My Delivery Point')
+	EndTextCommandSetBlipName(deliveryblip[deliveryblipid])
+	SetBlipRoute(deliveryblip[deliveryblipid],true)
+	SetBlipRouteColour(deliveryblip[deliveryblipid],3)
+	SetNewWaypoint(Config.DeliveryReturnPoint)
+	TriggerServerEvent('qb-vehicleshop:server:owncar',data)
+	TriggerServerEvent('don-carbuild:server:deletedeliveredcars',data)
+	while DoesEntityExist(transport) do
+		Wait(0)
+		if #(Config.DeliveryReturnPoint - GetEntityCoords(transport)) < 10 and GetVehiclePedIsIn(PlayerPedId()) == transport then
+			exports['qb-core']:DrawText(Lang:t('commands.turnbacktruck'))
+			if IsControlJustReleased(0, 38) then
+				exports['qb-core']:KeyPressed(38)
 				exports['qb-core']:HideText()
+				DeleteEntity(transport)
+				SetBlipRoute(deliveryblip[deliveryblipid],false)
+				RemoveBlip(deliveryblip[deliveryblipid])
+				QBCore.Functions.Notify(Lang:t('success.moneyback'),"success")
+				TriggerServerEvent('don-carbuild:server:pay')
 			end
+		else
+			exports['qb-core']:HideText()
 		end
 	end
 end)
@@ -2553,9 +2716,6 @@ AddEventHandler('onResourceStop', function(resourceName)
 			local plate = v.plate
 			DeleteEntity(spawnprojectcars[plate])
 			DeleteEntity(spawnprojectshell[plate])
-			if blips[plate] then
-				RemoveBlip(blips[plate])
-			end
 		end
 		DeleteObject(obj)
 		DeleteObject(obj2)

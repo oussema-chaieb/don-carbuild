@@ -1,4 +1,3 @@
-shared_script '@props/ai_module_fg-obfuscated.lua'
 fx_version 'cerulean'
 game 'gta5'
 ui_page 'html/index.html'

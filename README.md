@@ -1,58 +1,53 @@
 # don-carbuild
 
-# DESRIPTION
+## DESCRIPTION  
 
-well the whole idea is how you're gonna make a stock systeme with you vehicle shop
-but how you're gonna get the vehicles to added in you're store
-well for that, you need to build your car step by step and then you will deliver it to the dealer shop
-another thing, you will have the possibility to change the car price !
+The **don-carbuild** system is a stock management solution for vehicle shops. Instead of directly adding vehicles to the store, you must **build a car step by step** before delivering it to the dealership.  
 
-so let me explain ! the car price is not the same as in the qb-core/vehicles
-its more with 30%
-so if a car price is 100000 in qb-core/vehicles you will find it 130000
-the dealer will win only 30000 !
-so when he makes a discount he will lose that discount
-exemple if he want to sell the car for only 120000 he will win only 20000 instead of 30000
+Additionally, dealers can adjust car prices, but there's a **fixed profit margin**:  
 
-# FEATURES
+- The base price of a vehicle in `qb-core/vehicles` is increased by **30%**.  
+- Example: If a car costs **$100,000** in `qb-core/vehicles`, its price in this system will be **$130,000**.  
+- The dealer's profit is **$30,000** by default.  
+- If the dealer offers a discount (e.g., sells for **$120,000**), their profit will be reduced accordingly (**$20,000** instead of $30,000).  
 
-added a vehicle catalogue
-i use now a forked script you can find it here
-https://github.com/TN-DEVV/tn-vehiclecatalogue
+## FEATURES  
 
-added new ui for selling vehicles !
+✅ Added a **vehicle catalog**  
+🔗 Now using a forked script: [tn-vehiclecatalogue](https://github.com/TN-DEVV/tn-vehiclecatalogue)  
+🆕 New **UI for selling vehicles**  
 
-# INSTALLATION
+## INSTALLATION  
 
--- add this to qb-core/shared/items
+### 1️⃣ Add Items to `qb-core/shared/items`  
 
-    paint_red 				 	 = {name = 'paint_red', 			  	  		label = 'Paint Red', 				weight = 200, 		type = 'item', 		image = 'paint_red.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_white 				 = {name = 'paint_white', 			  	  		label = 'Paint White', 				weight = 200, 		type = 'item', 		image = 'paint_white.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_pink 				 	 = {name = 'paint_pink', 			  	  		label = 'Paint Pink', 				weight = 200, 		type = 'item', 		image = 'paint_pink.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_blue 				 	 = {name = 'paint_blue', 			  	  		label = 'Paint Blue', 				weight = 200, 		type = 'item', 		image = 'paint_blue.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_yellow 				 = {name = 'paint_yellow', 			  	  		label = 'Paint Yellow', 			weight = 200, 		type = 'item', 		image = 'paint_yellow.png', 		unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_green 				 = {name = 'paint_green', 			  	  		label = 'Paint Green', 				weight = 200, 		type = 'item', 		image = 'paint_green.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_orange 				 = {name = 'paint_orange', 			  	  		label = 'Paint Orange', 			weight = 200, 		type = 'item', 		image = 'paint_orange.png', 		unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_brown 				 = {name = 'paint_brown', 			  	  		label = 'Paint Brown', 				weight = 200, 		type = 'item', 		image = 'paint_brown.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_purple 				 = {name = 'paint_purple', 			  	  		label = 'Paint Purple', 			weight = 200, 		type = 'item', 		image = 'paint_purple.png', 		unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_grey 				 	 = {name = 'paint_grey', 			  	  		label = 'Paint Grey', 				weight = 200, 		type = 'item', 		image = 'paint_grey.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    paint_black 				 = {name = 'paint_black', 			  	  		label = 'Paint Black', 				weight = 200, 		type = 'item', 		image = 'paint_black.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Paint for Vehicle'},
-    door 				 	 	 = {name = 'door', 			  	  				label = 'Vehicle Door', 			weight = 200, 		type = 'item', 		image = 'door.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    bonnet 				 	 	 = {name = 'bonnet', 			  	  			label = 'Vehicle bonnet', 			weight = 200, 		type = 'item', 		image = 'bonnet.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    trunk 				 		 = {name = 'trunk', 			  	  			label = 'Vehicle trunk', 			weight = 200, 		type = 'item', 		image = 'trunk.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    wheel 				 	 	 = {name = 'wheel', 			  	  			label = 'Vehicle wheel', 			weight = 200, 		type = 'item', 		image = 'wheel.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    seat 				 		 = {name = 'seat', 			  	  				label = 'Vehicle seat', 			weight = 200, 		type = 'item', 		image = 'seat.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    engine 				 		 = {name = 'engine', 			  	  			label = 'Vehicle engine', 			weight = 200, 		type = 'item', 		image = 'engine.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    transmition 				 = {name = 'transmition', 			  	  		label = 'Vehicle transmition', 		weight = 200, 		type = 'item', 		image = 'transmition.png', 		unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    exhaust 				 	 = {name = 'exhaust', 			  	  			label = 'Vehicle exhaust', 			weight = 200, 		type = 'item', 		image = 'exhaust.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
-    brake 				 	 	 = {name = 'brake', 			  	  			label = 'Vehicle brake', 			weight = 200, 		type = 'item', 		image = 'brake.png', 			unique = false, 	useable = true, 	shouldClose = true,	   combinable = nil,   description = 'Parts for Vehicle'},
+Insert the following items into your `qb-core/shared/items` file:  
 
--- SQL
-if you are using qb-vehicleshop you do not need to import vehshop.sql
-if you don't so please import vehshop.sql
+```lua
+paint_red = {name = 'paint_red', label = 'Paint Red', weight = 200, type = 'item', image = 'paint_red.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Paint for Vehicle'},
+paint_white = {name = 'paint_white', label = 'Paint White', weight = 200, type = 'item', image = 'paint_white.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Paint for Vehicle'},
+paint_black = {name = 'paint_black', label = 'Paint Black', weight = 200, type = 'item', image = 'paint_black.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Paint for Vehicle'},
+-- (Add other colors here)
+engine = {name = 'engine', label = 'Vehicle Engine', weight = 200, type = 'item', image = 'engine.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Vehicle Engine'},
+transmission = {name = 'transmission', label = 'Vehicle Transmission', weight = 200, type = 'item', image = 'transmission.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Vehicle Transmission'},
+wheel = {name = 'wheel', label = 'Vehicle Wheel', weight = 200, type = 'item', image = 'wheel.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Vehicle Wheel'},
+brake = {name = 'brake', label = 'Vehicle Brake', weight = 200, type = 'item', image = 'brake.png', unique = false, useable = true, shouldClose = true, combinable = nil, description = 'Vehicle Brake'},
+```
 
-and import the sql.sql
+### 2️⃣ SQL Database Setup  
 
---add itemsimages to your inventory script
+- If you are using `qb-vehicleshop`, you **DO NOT** need to import `vehshop.sql`.  
+- If you are **not** using `qb-vehicleshop`, **import both** `vehshop.sql` and `sql.sql`.  
 
---delete any other vehicle shop script and drag and drop the script
+### 3️⃣ Add Item Images to Your Inventory Script  
+
+Make sure to add all item images (`.png` files) to your inventory script's images folder.  
+
+### 4️⃣ Remove Other Vehicle Shop Scripts  
+
+Before installing this system, **delete any other vehicle shop scripts** to avoid conflicts. Then, **drag and drop this script** into your resources folder.  
+
+## Notes  
+
+⚠️ Make sure all images for new items are correctly placed in the inventory script's images folder.  
+⚠️ If you encounter issues, check that **all database imports are done correctly**.  
